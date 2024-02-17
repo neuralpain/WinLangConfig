@@ -1,48 +1,65 @@
 #!/bin/bash
 
-# PowerCMD.sh, Version 0.1.0
+# PowerCMD.sh, Version 0.2.1
 # Copyright (c) 2024, neuralpain 
 # https://github.com/neuralpain/PowerCMD
 # A bundler to integrate PowerShell with CMD
 
+v="0.2.1"
+return=PowerCMD:
+
+# [ SCRIPT INFO ]
 # edit script version in ./VERSION
 version=$(<VERSION)
 # change name of script
-name=script
+name=WinLangConfig
 # terminal window title
-script_title="Script Title"
-with_admin=false
-return=PowerCMD:
-v="0.1.0"
+script_title="WinLangConfig"
+# change to "true" if your script requires admin
+with_admin=true
 
-# location of directories
+# [ DIRECTORIES ]
+# source directory
 src=./src
+# other files directory
 res=$src/res
+# PowerShell functions/module directory
 functions=$src/functions
+# -- auto-generated -- #
 buildfile=./build/$name
 cmd_cache=./cache/cmd.build.cmd
 pwsh_cache=./cache/pwsh.build.ps1
-# for package release
-complete_release=$name-$version.zip
-# for lightweight release
-lightweight_release=$name-$version.min.zip
+# -------------------- #
 
+# [ FILES LIST ]
 # add additional files here
 additional_files=(
-  # [...]
-  # [...]
+  # "file_1.txt"
+  # "file_2.txt"
+  # "file_3.txt"
   # [...]
 )
-
+# files to exclude in *.min.zip
+exclude_files=(
+  # "file_1.txt"
+  # "file_3.txt"
+  # [...]
+)
 # declare a list of your PowerShell functions here
 powershell_functions=(
+  # "$functions/Function-One.ps1"
+  # "$functions/Function-Two.ps1"
+  # "$functions/Function-Three.ps1"
   # "$functions/[...].ps1"
-  # "$functions/[...].ps1"
-  # "$functions/[...].ps1"
-  # you should not need to remove main unless
-  # the main PowerShell file is renamed
+  # you should not need to remove Main.ps1
+  # unless the main PowerShell file is renamed
   "$src/Main.ps1"
 )
+
+# --- END CONFIGURATION --- #
+
+complete_release=$name-$version.zip
+lightweight_release=$name-$version.min.zip
 
 add_pwsh() {
   echo "set \"wdir=%~dp0\"" >> $cmd_cache # your working directory in batch
@@ -83,36 +100,34 @@ add_pwsh() {
 }
 
 bundle() {
-  [[ ! -d "./cache" ]] && mkdir cache || rm ./cache/*;
+  [[ ! -d "./cache" ]] && mkdir cache || rm -r ./cache/*;
   # uses neuralpain/PwshBatch.cmd <https://gist.github.com/neuralpain/4ca8a6c9aca4f0a1af2440f474e92d05>
   echo "<# :# DO NOT REMOVE THIS LINE" > $cmd_cache
   echo >> $cmd_cache
   echo ":: $name.cmd, Version $version" >> $cmd_cache
   # add the copyright information, link to your project repository and
   # description of the script, or remove it entirely, whichever you choose
-  echo ":: Copyright (c) 1937, Alan Turing" >> $cmd_cache
-  echo ":: https://git.kernel.org/pub/scm/" >> $cmd_cache
-  echo ":: A script that does stuff" >> $cmd_cache
+  echo ":: Copyright (c) 2024, neuralpain" >> $cmd_cache
+  echo ":: https://github.com/neuralpain/WinLangConfig" >> $cmd_cache
+  echo ":: Configure Windows display language" >> $cmd_cache
   echo >> $cmd_cache
   echo "@echo off" >> $cmd_cache
   echo "@title $script_title v$version" >> $cmd_cache
   add_pwsh
   echo >> $cmd_cache
   # -- add batch code | this is optional -- #
-  # cat $src/main.cmd >> $cmd_cache  # optional
-  # echo >> $cmd_cache               # optional
+  # cat $src/main.cmd >> $cmd_cache
+  # echo >> $cmd_cache
   # -- end batch code -- #
   echo "# ---------- PowerShell Script ---------- #>" >> $cmd_cache
-  echo >> $cmd_cache
 
   # Loop through the powershell_functions
   for function in "${powershell_functions[@]}"; do
-    cat $function >> $pwsh_cache
     # add a break between files:
     #   142: end of one file 
-    # [break]
+    echo >> $pwsh_cache # [break]
     #     1: start of next file
-    echo >> $pwsh_cache
+    cat $function >> $pwsh_cache
   done
 
   # final bundle
@@ -146,7 +161,7 @@ compress() {
   zip -q $complete_release * || (echo -e "$return error: Failed to create archive." && return)
   # files to exclude in lightweight release
   # `*.zip` is mandatory, else it will include the normal release as well
-  zip -q $lightweight_release * -x file_2.txt file_3.txt *.zip || (echo -e "$return error: Failed to create archive." && return)
+  zip -q $lightweight_release * -x ${exclude_files[@]} *.zip || (echo -e "$return error: Failed to create archive." && return)
 
   # cleanup temporary files copied to /dist
   rm ./LICENSE ./VERSION
@@ -182,18 +197,16 @@ case "$1" in
   -v|--verison)
     printversion && exit;;
   -c|--clear)
-    rm ./build/* &>/dev/null && exit;;
+    rm -r ./build/* &>/dev/null && exit;;
   -C|--clear-all)
     rm -r ./build ./dist ./cache &>/dev/null && exit;;
   -s|--release)
     buildfile=./dist/$name-$version
-    [[ ! -d "./dist" ]] && mkdir dist || rm ./dist/*;
-    [[ $2 == "--with-admin" || $3 == "--with-admin" ]] && with_admin=true
+    [[ ! -d "./dist" ]] && mkdir dist || rm -r ./dist/*;
     bundle $2;;
   -t|--test)
-    [[ $2 == "--with-admin" ]] && with_admin=true
     # add a specific note in the file for the current iteration of the script test
-    [[ $# -gt 2 ]] && note=$@ && note=${note/"-t "} && note=${note/"--test "} && note=${note/"--with-admin "} && note=${note//" "/-} && note="-$note"
+    [[ $# -gt 2 ]] && note=$@ && note=${note/"-t "} && note=${note/"--test "} && note=${note//" "/-} && note="-$note"
     bundle_test;;
   *)
     if [[ $@ == "" ]]; then echo "$return error: Missing argument."

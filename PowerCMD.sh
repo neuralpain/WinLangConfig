@@ -1,20 +1,27 @@
 #!/bin/bash
 
-# PowerCMD.sh, Version 0.2.1
-# Copyright (c) 2024, neuralpain 
+# PowerCMD.sh, Version 0.2.2
+# Copyright (c) 2024, neuralpain
 # https://github.com/neuralpain/PowerCMD
 # A bundler to integrate PowerShell with CMD
 
-v="0.2.1"
-return=PowerCMD:
+v="0.2.2"
+return="PowerCMD:"
 
 # [ SCRIPT INFO ]
 # edit script version in ./VERSION
 version=$(<VERSION)
 # change name of script
-name=WinLangConfig
+name="WinLangConfig"
 # terminal window title
 script_title="WinLangConfig"
+# license information
+license_year="2024"
+license_owner="neuralpain"
+# link to software website or oss repo
+project_url="https://github.com/neuralpain/WinLangConfig"
+# basic description of what this script does
+script_description="Configure Windows display language"
 # change to "true" if your script requires admin
 with_admin=true
 
@@ -107,9 +114,9 @@ bundle() {
   echo ":: $name.cmd, Version $version" >> $cmd_cache
   # add the copyright information, link to your project repository and
   # description of the script, or remove it entirely, whichever you choose
-  echo ":: Copyright (c) 2024, neuralpain" >> $cmd_cache
-  echo ":: https://github.com/neuralpain/WinLangConfig" >> $cmd_cache
-  echo ":: Configure Windows display language" >> $cmd_cache
+  echo ":: Copyright (c) $license_year, $license_owner" >> $cmd_cache
+  echo ":: $project_url" >> $cmd_cache
+  echo ":: $script_description" >> $cmd_cache
   echo >> $cmd_cache
   echo "@echo off" >> $cmd_cache
   echo "@title $script_title v$version" >> $cmd_cache
@@ -176,7 +183,6 @@ printusage() {
   echo "Usage: PowerCMD [OPTION...]"
   echo -e "A bundler to integrate PowerShell with CMD\n"
   echo "  -s, --release      Build for stable release"
-  echo "      --with-admin   Include admin permission request"
   echo "  -a, --archive      Archive stable release package"
   echo "  -t, --test [note]  Build unit tests"
   echo "  -C, --clear-all    Delete temporary files and folders"

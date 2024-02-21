@@ -34,9 +34,15 @@ function Add-Language($Lang) {
     Start-Sleep -Milliseconds 100
   }
 
-  Wait-Job $DownloadJob >$null 2>&1
-  Remove-Job $DownloadJob
-  Write-Host "`rInstalled $($Lang.Name)" -ForegroundColor Green
+  switch ($DownloadJob.State) {
+    'Completed' {
+      Wait-Job $DownloadJob >$null 2>&1
+      Remove-Job $DownloadJob
+      Write-Host "`rInstalled $($Lang.Name)" -ForegroundColor Green
+    }
+    'Failed' { Write-Host "`r:: Download encountered an error.`n" -ForegroundColor DarkYellow; Pause }
+    'Stopped' { Write-Host "`r:: Download was manually stopped.`n" -ForegroundColor DarkYellow; Pause }
+  }
 }
 
 function Set-UiLang($Lang) {

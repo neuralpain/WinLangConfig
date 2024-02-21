@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# PowerCMD.sh, Version 0.2.2
+# PowerCMD.sh, Version 0.2.4
 # Copyright (c) 2024, neuralpain
 # https://github.com/neuralpain/PowerCMD
 # A bundler to integrate PowerShell with CMD
 
-v="0.2.2"
+v="0.2.4"
 return="PowerCMD:"
+
+# --- START CONFIGURATION --- #
 
 # [ SCRIPT INFO ]
 # edit script version in ./VERSION
@@ -57,7 +59,8 @@ powershell_functions=(
   # "$functions/Function-One.ps1"
   # "$functions/Function-Two.ps1"
   # "$functions/Function-Three.ps1"
-  # "$functions/[...].ps1"
+  "$functions/LanguageObjects.ps1"
+  "$functions/Get-WinDisplayLanguage.ps1"
   # you should not need to remove Main.ps1
   # unless the main PowerShell file is renamed
   "$src/Main.ps1"
@@ -147,7 +150,7 @@ bundle() {
 }
 
 bundle_test() {
-  build="$(date "+%y%m%d.%H%M%S")$note"
+  build="$(date "+%y%m%d.%H%M%S")$1"
   # this one to become the file name
   buildfile="$buildfile-$version-beta-Build.$build"
   # this one for the script's head comment
@@ -212,11 +215,11 @@ case "$1" in
     bundle $2;;
   -t|--test)
     # add a specific note in the file for the current iteration of the script test
-    [[ $# -gt 2 ]] && note=$@ && note=${note/"-t "} && note=${note/"--test "} && note=${note//" "/-} && note="-$note"
-    bundle_test;;
+    [[ $# -gt 1 ]] && note=$@ && note=${note/"-t "} && note=${note/"--test "} && note=${note//" "/-} && note="-$note"
+    bundle_test $note;;
   *)
-    if [[ $@ == "" ]]; then echo "$return error: Missing argument."
-    else echo -e "$return error: Invalid option '$1'"; fi
+    if [[ $@ == "" ]]; then echo "$return Missing argument."
+    else echo -e "$return Invalid option '$1'"; fi
     exit
 esac
 exit

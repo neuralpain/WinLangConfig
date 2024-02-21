@@ -56,9 +56,6 @@ exclude_files=(
 )
 # declare a list of your PowerShell functions here
 powershell_functions=(
-  # "$functions/Function-One.ps1"
-  # "$functions/Function-Two.ps1"
-  # "$functions/Function-Three.ps1"
   "$functions/LanguageObjects.ps1"
   "$functions/Get-WinDisplayLanguage.ps1"
   # you should not need to remove Main.ps1

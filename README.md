@@ -4,9 +4,6 @@ adksetup /quiet /layout c:\temp\ADKoffline
 
 adksetup.exe /quiet /installpath c:\ADK /features OptionId.DeploymentTools
 
-https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-8.1-and-8/dn621910(v=win.10)
-
-
 Set-WinUILanguageOverride -Language de-DE
 
 ## Language List
@@ -242,4 +239,8 @@ Set-WinUILanguageOverride -Language de-DE
 | 540A | 21514 | es-US          | Spanish - United States
 | 7C04 | 31748 | zh-CHT         | Chinese - Traditional
 
-> https://www.autoitscript.com/autoit3/docs/appendix/OSLangCodes.htm
+## References
+
+- https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-8.1-and-8/dn621910(v=win.10)
+- https://www.autoitscript.com/autoit3/docs/appendix/OSLangCodes.htm
+- https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/available-language-packs-for-windows?view=windows-11

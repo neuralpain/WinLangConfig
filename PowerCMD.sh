@@ -25,7 +25,7 @@ project_url="https://github.com/neuralpain/WinLangConfig"
 # basic description of what this script does
 script_description="Configure Windows display language"
 # change to "true" if your script requires admin
-with_admin=true
+with_admin=false
 
 # [ DIRECTORIES ]
 # source directory
@@ -42,25 +42,17 @@ pwsh_cache=./cache/pwsh.build.ps1
 
 # [ FILES LIST ]
 # add additional files here
-additional_files=(
-  # "file_1.txt"
-  # "file_2.txt"
-  # "file_3.txt"
-  # [...]
-)
+additional_files=()
 # files to exclude in *.min.zip
-exclude_files=(
-  # "file_1.txt"
-  # "file_3.txt"
-  # [...]
-)
+exclude_files=()
 # declare a list of your PowerShell functions here
 powershell_functions=(
-  "$functions/LanguageObjects.ps1"
+  "$functions/Initialize-LanguageObjects.ps1"
   "$functions/Get-WinDisplayLanguage.ps1"
+  "$functions/Write-LanguageSelectionMenu.ps1"
   # you should not need to remove Main.ps1
   # unless the main PowerShell file is renamed
-  "$src/Main.ps1"
+  # "$src/Main.ps1"
 )
 
 # --- END CONFIGURATION --- #

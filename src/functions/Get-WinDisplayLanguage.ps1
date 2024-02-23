@@ -1,15 +1,8 @@
-$LANGUAGE_REG_PATH="Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Nls\Language"
-$LANGUAGE_REG_KEY_DEFAULT="Default"
-$LANGUAGE_REG_KEY_INSTALL="InstallLanguage"
+$LANGUAGE_REG_PATH = "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Nls\Language"
+$LANGUAGE_REG_KEY_DEFAULT = "Default"
+$LANGUAGE_REG_KEY_INSTALL = "InstallLanguage"
 
-function Update-LanguageList($Lang) {
-  # $OldList = Get-WinUserLanguageList
-  # $OldList.Add($Lang.LanguageCode)
-  # Set-WinUserLanguageList $OldList
-  Set-WinUserLanguageList -LanguageList $Lang.LanguageCode -Force
-}
-
-function Write-Registry($Lang) {
+function Edit-Registry($Lang) {
   Set-ItemProperty -Path $LANGUAGE_REG_PATH `
                    -Name $LANGUAGE_REG_KEY_DEFAULT `
                    -Value $Lang.HexValue
@@ -18,7 +11,7 @@ function Write-Registry($Lang) {
                    -Value $Lang.HexValue
 }
 
-function Add-Language($Lang) {
+function Get-LanguagePack($Lang) {
   $DownloadJob = Install-Language -Language $Lang.LanguageCode -CopyToSettings -AsJob
 
   while ($DownloadJob.State -eq 'Running') {
@@ -45,9 +38,15 @@ function Add-Language($Lang) {
   }
 }
 
-function Set-UiLang($Lang) {
+function Update-LanguageList($Lang) {
+  $LangList = Get-WinUserLanguageList
+  $LangList.Insert(0, $Lang.LanguageCode)
+  Set-WinUserLanguageList $LangList
+  # Set-WinUserLanguageList -LanguageList $Lang.LanguageCode -Force
+}
+
+function Set-SystemUILanguage($Lang) {
   Set-WinSystemLocale $Lang.LanguageCode
-  Update-LanguageList $Lang.LanguageCode
   Set-SystemPreferredUILanguage -Language $Lang.LanguageCode
 }
 
@@ -61,15 +60,9 @@ Get-InstalledLanguage | ForEach-Object {
     Set-ItemProperty -Path $LANGUAGE_REG_PATH -Name $LANGUAGE_REG_KEY -Value $SelectedLanguage.HexValue
     Write-Host Installed $SelectedLanguage.Name
     # Update language list
-    # $OldList = Get-WinUserLanguageList
-    # $OldList.Add($SelectedLanguage.LanguageCode)
-    # Set-WinUserLanguageList -LanguageList $OldList
+    # $LangList = Get-WinUserLanguageList
+    # $LangList.Add($SelectedLanguage.LanguageCode)
+    # Set-WinUserLanguageList -LanguageList $LangList
   }
 }
 #>
-
-# use a boolean to check if the language is already in a list
-
-# ForEach-Object { Where-Object { $_. -match $SelectedLanguage.LanguageCode {
-#   return false
-# } }

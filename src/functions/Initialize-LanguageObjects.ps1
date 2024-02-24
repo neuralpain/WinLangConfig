@@ -197,7 +197,7 @@ $Lang_Lithuanian = [Language]@{
 }
 
 $Lang_Norwegian = [Language]@{
-  Name         = "Norwegian, Bokmål (Norway)"
+  Name         = "Norwegian, Bokmol (Norway)"
   LanguageCode = "nb-NO"
   HexValue     = "0414"
   DecValue     = "1044"
@@ -288,7 +288,7 @@ $Lang_Thai = [Language]@{
 }
 
 $Lang_Turkish = [Language]@{
-  Name         = "Turkish (Türkiye)"
+  Name         = "Turkish (Turkiye)"
   LanguageCode = "tr-TR"
   HexValue     = "041F"
   DecValue     = "1055"

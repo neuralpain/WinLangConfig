@@ -12,6 +12,8 @@ A small script to change the windows display language because it can be tedious 
 
 It is currently still in beta but you can [try it out](https://github.com/neuralpain/WinLangConfig/releases/latest) on your system. Just be sure to make a system restore point before you run the script.
 
+![wlc_ondesktop](https://github.com/neuralpain/WinLangConfig/assets/77242216/7e4955f8-edfa-48e8-94ed-5f52bd8ca401)
+
 ## Supported Language Packs and Language Interface Packs
 
 - **Language/region** - The name of the language that will be displayed in the UI. All Windows language packs are available for Windows Server. In Windows Server 2012 and later the user interface (UI) is localized only for the 18 languages listed in bold.

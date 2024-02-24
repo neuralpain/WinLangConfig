@@ -4,7 +4,13 @@
 
 adksetup.exe /quiet /installpath c:\ADK /features OptionId.DeploymentTools
 
+https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-8.1-and-8/dn621910(v=win.10)
+
 Set-WinUILanguageOverride -Language de-DE -->
+
+A small script to change the windows display language because it can be tedious sometimes and just does not work at other times.
+
+It is currently still in beta but you can [try it out](https://github.com/neuralpain/WinLangConfig/releases/latest) on your system. Just be sure to make a system restore point before you run the script.
 
 ## Supported Language Packs and Language Interface Packs
 
@@ -60,8 +66,3 @@ Language/region	| Language/region tag |	Language/region ID | Language/region dec
 | Turkish (Türkiye)             | tr-TR	     | 041F | 1055 |
 | Ukrainian (Ukraine)           | uk-UA	     | 0422 | 1058 |
 | Vietnamese	                  | vi-VN	     | 042A | 1066 |
-
-## References
-
-- https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-8.1-and-8/dn621910(v=win.10)
-- https://www.autoitscript.com/autoit3/docs/appendix/OSLangCodes.htm

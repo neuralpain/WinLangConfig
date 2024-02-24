@@ -25,7 +25,7 @@ project_url="https://github.com/neuralpain/WinLangConfig"
 # basic description of what this script does
 script_description="Configure Windows display language"
 # change to "true" if your script requires admin
-with_admin=false
+with_admin=true
 
 # [ DIRECTORIES ]
 # source directory
@@ -52,7 +52,7 @@ powershell_functions=(
   "$functions/Write-LanguageSelectionMenu.ps1"
   # you should not need to remove Main.ps1
   # unless the main PowerShell file is renamed
-  # "$src/Main.ps1"
+  "$src/Main.ps1"
 )
 
 # --- END CONFIGURATION --- #

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# PowerCMD.sh, Version 0.2.4
+# PowerCMD.sh, Version 0.2.5
 # Copyright (c) 2024, neuralpain
 # https://github.com/neuralpain/PowerCMD
 # A bundler to integrate PowerShell with CMD
 
-v="0.2.4"
+v="0.2.5"
 return="PowerCMD:"
 
 # --- START CONFIGURATION --- #
@@ -114,9 +114,11 @@ bundle() {
   echo "@title $script_title v$version" >> $cmd_cache
   add_pwsh
   echo >> $cmd_cache
-  # -- add batch code | this is optional -- #
-  # cat $src/main.cmd >> $cmd_cache
-  # echo >> $cmd_cache
+  # -- add batch code -- #
+  if [[ -f "$src/main.cmd" ]]; then 
+    cat $src/main.cmd >> $cmd_cache
+    echo >> $cmd_cache
+  fi
   # -- end batch code -- #
   echo "# ---------- PowerShell Script ---------- #>" >> $cmd_cache
 

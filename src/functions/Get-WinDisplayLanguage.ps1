@@ -37,8 +37,8 @@ function Get-LanguagePack {
       Remove-Job $DownloadJob
       Write-Host "`rInstalled $($Script:SELECTED_LANG.Name)" -ForegroundColor Green
     }
-    'Failed' { Write-Host "`n:: Download encountered an error.`n" -ForegroundColor Yellow; Pause; exit }
-    'Stopped' { Write-Host "`n:: Download was manually stopped.`n" -ForegroundColor Yellow; Pause; exit }
+    'Failed' { Write-Host "`n:: Download encountered an error.`n" -ForegroundColor Yellow; exit }
+    'Stopped' { Write-Host "`n:: Download was manually stopped.`n" -ForegroundColor Yellow; exit }
   }
 }
 

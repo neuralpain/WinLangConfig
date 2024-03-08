@@ -1,5 +1,3 @@
-$Script:SELECTED_LANG = $null
-
 class Language {
   [String]$Name
   [String]$LanguageCode
@@ -353,3 +351,6 @@ $LanguageObjectList = @(
   $Lang_Ukrainian,
   $Lang_Vietnamese
 )
+
+# English set as the default language
+$Script:SELECTED_LANG = $Lang_English

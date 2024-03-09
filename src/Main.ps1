@@ -39,15 +39,19 @@ function Write-WinLangConfig($Col1, $Col2) {
   Write-Host "    ||__|||__|||__|||__|||__|||__||   " -ForegroundColor $Col2
   Write-Host "    |/__\|/__\|/__\|/__\|/__\|/__\|   " -ForegroundColor $Col2
   Write-Host
+  Write-Host "                 v1.1.0               " -ForegroundColor $Col2
+  Write-Host
 }
 
-Write-WinLangConfig "White" "Cyan"
+$Text_ComputerRequiresRestart = "Computer requires a restart to apply changes."
+$Text_ConfirmRestart = "Restart to apply changes. Do you want to restart now?"
+$Text_LanguageNotInstalled = "Language not installed. Please select an installed`n     language or install this language to use it."
 
 $TITLE_BAR_HEIGHT = 40
 $BUTTON_HEIGHT = 100
 $BUTTON_HEIGHT_SMALL = 50
 $WINDOW_WIDTH = 300
-$WINDOW_HEIGHT = $TITLE_BAR_HEIGHT + ($BUTTON_HEIGHT * 1) + ($BUTTON_HEIGHT_SMALL * 2) + 400
+$WINDOW_HEIGHT = $TITLE_BAR_HEIGHT + ($BUTTON_HEIGHT * 1) + ($BUTTON_HEIGHT_SMALL * 3) + 300
 
 $MainWindowForm = New-Object Form -Property @{
   StartPosition   = [FormStartPosition]::CenterScreen
@@ -66,15 +70,14 @@ $Button_LanguagePackInfo = New-Object Button -Property @{
   Text   = "INFO"
 }
 
-$Button_OK = New-Object Button -Property @{
+$Button_AddNewLanguage = New-Object Button -Property @{
   Height = $BUTTON_HEIGHT_SMALL
-  Width  = $BUTTON_HEIGHT_SMALL / 2
   Dock   = 'Bottom'
-  Text   = "Use this Language"
+  Text   = "Install this Language"
   # DialogResult = [System.Windows.Forms.DialogResult]::OK
 }
 
-$Button_Cancel = New-Object Button -Property @{
+$Button_ExitApplication = New-Object Button -Property @{
   Height       = $BUTTON_HEIGHT_SMALL
   Width        = $BUTTON_HEIGHT_SMALL / 2
   Dock         = 'Bottom'
@@ -82,10 +85,16 @@ $Button_Cancel = New-Object Button -Property @{
   DialogResult = [System.Windows.Forms.DialogResult]::Cancel
 }
 
+$Button_SwitchDisplayLanguage = New-Object Button -Property @{
+  Height = $BUTTON_HEIGHT_SMALL
+  Dock   = 'Bottom'
+  Text   = "Use this Language"
+}
+
 $ListBox_LanguageSelection = New-Object ListBox -Property @{
   Location = New-Object System.Drawing.Point(10, 40)
   Dock     = 'Fill'
-  Height   = $BUTTON_HEIGHT
+  # Height   = $BUTTON_HEIGHT
 }
 
 $Label_NameTag = New-Object Label -Property @{
@@ -96,13 +105,14 @@ $Label_NameTag = New-Object Label -Property @{
 }
 
 function Show-FirstWindowControls {
-  $MainWindowForm.Controls.Clear()
+  # $MainWindowForm.Controls.Clear()
   $MainWindowForm.Controls.AddRange((
       $ListBox_LanguageSelection,
       $Button_LanguagePackInfo,
       $Label_NameTag,
-      $Button_OK,
-      $Button_Cancel
+      $Button_SwitchDisplayLanguage,
+      $Button_AddNewLanguage,
+      $Button_ExitApplication
     ))
 }
 
@@ -124,19 +134,19 @@ $ListBox_LanguageSelection.Add_Click({
       if ($lang.Name -eq $LanguageObjectList[$ListBox_LanguageSelection.SelectedIndex].Name) {
         if ($lang.Name -ne $Script:SELECTED_LANG.Name) {
           $Script:SELECTED_LANG = $lang
-          Write-Host Selected $Script:SELECTED_LANG.Name
+          Write-Host "${env:USERNAME}: Selected $($Script:SELECTED_LANG.Name)"
         }
         else {
           $Script:SELECTED_LANG = $null
-          Write-Host Unselected $lang.Name
+          Write-Host "${env:USERNAME}: Unselected $($lang.Name)"
         }
       }
     }
   })
 
-$Button_OK.Add_Click({
+$Button_AddNewLanguage.Add_Click({
     if ($null -eq $Script:SELECTED_LANG) { 
-      Write-Host "Select a language."; return 
+      Write-Host "WLC: Please select a language."; return 
     }
 
     $userSelectedAlreadyInstalledLanguage = (Get-WinUserLanguageList | Where-Object { $_.LanguageTag -eq $Script:SELECTED_LANG.LanguageCode })
@@ -147,15 +157,43 @@ $Button_OK.Add_Click({
         Get-LanguagePack
         Update-LanguageList
         Set-SystemUILanguage
+        Write-Host "WLC: $Text_ComputerRequiresRestart" -ForegroundColor Yellow
+        $confirm = [MessageBox]::Show($Text_ConfirmRestart, "Confirm Resatrt", [MessageBoxButtons]::YesNo)
+        if ($confirm -eq "Y") { Restart-Computer }
       }
     }
     else { 
       Write-Host "`"$($Script:SELECTED_LANG.Name)`" is already installed. Please select another language." -ForegroundColor Yellow
     }
   })
+  
+$Button_SwitchDisplayLanguage.Add_Click({
+    if ($null -eq $Script:SELECTED_LANG) { 
+      Write-Host "WLC: Please select a language."; return 
+    }
+    
+    $currentDisplayLanguage = (Get-ItemProperty -Path "$LANGUAGE_REG_PATH" -Name $LANGUAGE_REG_KEY_DEFAULT).$LANGUAGE_REG_KEY_DEFAULT
+    if ($currentDisplayLanguage -eq $Script:SELECTED_LANG.HexValue) {
+      Write-Host "WLC: Already using $($Script:SELECTED_LANG.Name)."; return
+    }
+    
+    $languageIsInstalled = (Get-WinUserLanguageList | Where-Object { $_.LanguageTag -eq $Script:SELECTED_LANG.LanguageCode })
+    if ($null -eq $languageIsInstalled) {
+      Write-Host "WLC: $Text_LanguageNotInstalled"  ; return
+    }
 
+    $confirm = [MessageBox]::Show("Are you sure you want to use $($Script:SELECTED_LANG.Name)?", "Confirm Language Selection", [MessageBoxButtons]::YesNo)
+    if ($confirm -eq "Y") {
+      Edit-Registry -DefaultLanguage
+      Update-LanguageList
+      Set-SystemUILanguage
+      Write-Host "WLC: $Text_ComputerRequiresRestart" -ForegroundColor Yellow
+    }
+  })
+  
+Write-WinLangConfig "White" "Cyan"
+Start-Transcript "C:\Windows\Logs\WinLangConfig_Log_$($(Get-Date).ToString('yyMMddHHmmss')).txt" >$null 2>&1
 Show-FirstWindowControls
-$MainWindowForm.ShowDialog()
-Write-Host "Please restart your Windows Operating System for the changes to take effect." -ForegroundColor Yellow
-Pause
+$result = $MainWindowForm.ShowDialog()
+if ($result -eq [System.Windows.Forms.DialogResult]::Cancel) { exit }
 exit

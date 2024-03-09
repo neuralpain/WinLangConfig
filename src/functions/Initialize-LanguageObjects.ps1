@@ -353,4 +353,4 @@ $LanguageObjectList = @(
 )
 
 # English set as the default language
-$Script:SELECTED_LANG = $Lang_English
+$Script:SELECTED_LANG = $null

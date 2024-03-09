@@ -1,6 +1,13 @@
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
+
 [Application]::EnableVisualStyles()
+$code = @"
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    public static extern bool SetProcessDPIAware();
+"@
+$Win32Helpers = Add-Type -MemberDefinition $code -Name "Win32Helpers" -PassThru
+$null = $Win32Helpers::SetProcessDPIAware()
 
 function Write-WinLangConfig($Col1, $Col2) {
   Clear-Host

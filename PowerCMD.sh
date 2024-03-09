@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# PowerCMD.sh, Version 0.2.4
+# PowerCMD.sh, Version 0.2.5
 # Copyright (c) 2024, neuralpain
 # https://github.com/neuralpain/PowerCMD
 # A bundler to integrate PowerShell with CMD
 
-v="0.2.4"
+v="0.2.5"
 return="PowerCMD:"
 
 # --- START CONFIGURATION --- #
@@ -49,7 +49,6 @@ exclude_files=()
 powershell_functions=(
   "$functions/Initialize-LanguageObjects.ps1"
   "$functions/Get-WinDisplayLanguage.ps1"
-  "$functions/Write-LanguageSelectionMenu.ps1"
   # you should not need to remove Main.ps1
   # unless the main PowerShell file is renamed
   "$src/Main.ps1"
@@ -59,6 +58,12 @@ powershell_functions=(
 
 complete_release=$name-$version.zip
 lightweight_release=$name-$version.min.zip
+
+# `using` statements
+useAsmForms="using assembly System.Windows.Forms;"
+useNameForms="using namespace System.Windows.Forms;"
+useNameDrawing="using namespace System.Drawing;"
+useNameWin32="using namespace Microsoft.Win32"
 
 add_pwsh() {
   echo "set \"wdir=%~dp0\"" >> $cmd_cache # your working directory in batch
@@ -95,7 +100,7 @@ add_pwsh() {
   echo ":init" >> $cmd_cache
   echo "cls & echo." >> $cmd_cache
   echo "echo Initializing. Please wait..." >> $cmd_cache
-  echo "%pwsh% ^\"Invoke-Expression ('^& {' + (Get-Content -Raw '%~f0') + '} %ARGS%')\"" >> $cmd_cache
+  echo "%pwsh% ^\"$useAsmForms $useNameForms $useNameDrawing Invoke-Expression ('^& {' + (Get-Content -Raw '%~f0') + '} %ARGS%')\"" >> $cmd_cache
 }
 
 bundle() {
@@ -114,9 +119,11 @@ bundle() {
   echo "@title $script_title v$version" >> $cmd_cache
   add_pwsh
   echo >> $cmd_cache
-  # -- add batch code | this is optional -- #
-  # cat $src/main.cmd >> $cmd_cache
-  # echo >> $cmd_cache
+  # -- add batch code -- #
+  if [[ -f "$src/main.cmd" ]]; then 
+    cat $src/main.cmd >> $cmd_cache
+    echo >> $cmd_cache
+  fi
   # -- end batch code -- #
   echo "# ---------- PowerShell Script ---------- #>" >> $cmd_cache
 

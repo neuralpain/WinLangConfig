@@ -2,22 +2,33 @@ $LANGUAGE_REG_PATH = "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Cont
 $LANGUAGE_REG_KEY_DEFAULT = "Default"
 $LANGUAGE_REG_KEY_INSTALL = "InstallLanguage"
 
+# get user's initial language
+$Script:ORIGINAL_LANG = (Get-ItemProperty -Path $LANGUAGE_REG_PATH -Name $LANGUAGE_REG_KEY_DEFAULT).$LANGUAGE_REG_KEY_DEFAULT
+foreach ($lang in $LanguageObjectList) {
+  if ($lang.HexValue -eq $Script:ORIGINAL_LANG) {
+    $Script:ORIGINAL_LANG = $lang
+  }
+}
+
 function Edit-Registry {
-  param([Switch]$DefaultLanguage)
+  param($Language = $Script:SELECTED_LANG)
   
   Set-ItemProperty `
     -Path $LANGUAGE_REG_PATH `
     -Name $LANGUAGE_REG_KEY_DEFAULT `
-    -Value $Script:SELECTED_LANG.HexValue
+    -Value $Language.HexValue
   
-  if (!$DefaultLanguage) {
-    Set-ItemProperty `
-      -Path $LANGUAGE_REG_PATH `
-      -Name $LANGUAGE_REG_KEY_INSTALL `
-      -Value $Script:SELECTED_LANG.HexValue
-  }
+  Set-ItemProperty `
+    -Path $LANGUAGE_REG_PATH `
+    -Name $LANGUAGE_REG_KEY_INSTALL `
+    -Value $Language.HexValue
+  
+  Write-Host "WLC: Updated registry" -ForegroundColor White
+}
 
-  Write-Host "WLC: Updated registry" -ForegroundColor Cyan
+function Restore-PreviousLanguageAfterDownloadFailure {
+  Edit-Registry -Language $Script:ORIGINAL_LANG
+  Write-Host "WLC: Reverted to previous display language" -ForegroundColor Yellow
 }
 
 function Get-LanguagePack {
@@ -46,8 +57,14 @@ function Get-LanguagePack {
       Remove-Job $DownloadJob
       Write-Host "`rInstalled $($Script:SELECTED_LANG.Name)" -ForegroundColor Green
     }
-    'Failed' { Write-Host "`n:: Download encountered an error.`n" -ForegroundColor Yellow; exit }
-    'Stopped' { Write-Host "`n:: Download was manually stopped.`n" -ForegroundColor Yellow; exit }
+    'Failed' {
+      Write-Host "`n:: Download encountered an error." -ForegroundColor Red 
+      Restore-PreviousLanguageAfterDownloadFailure; exit
+    }
+    'Stopped' {
+      Write-Host "`n:: Download was manually stopped." -ForegroundColor Red 
+      Restore-PreviousLanguageAfterDownloadFailure; exit
+    }
   }
 }
 
@@ -55,15 +72,16 @@ function Update-LanguageList {
   $LanguageList = Get-WinUserLanguageList
   $LanguageList.Insert(0, $Script:SELECTED_LANG.LanguageCode)
   Set-WinUserLanguageList $LanguageList -Force
-  Write-Host "WLC: Reordered system language list" -ForegroundColor Cyan
+  Write-Host "WLC: Reordered system language list" -ForegroundColor White
 }
 
 function Set-SystemUILanguage {
+  # -- RPC_E_CHANGED_MODE (0x80010106)
+  # https://github.com/jchv/go-webview2/issues/13
   Set-WinSystemLocale $Script:SELECTED_LANG.LanguageCode
-  Write-Host "WLC: Uppdate system locale" -ForegroundColor Cyan
-  <# 
-    -- This has some issue
-    Set-SystemPreferredUILanguage -Language $Script:SELECTED_LANG.LanguageCode
-    Write-Host "WLC: Set system UI language" -ForegroundColor Cyan
-  #>
+  Write-Host "WLC: System locale updated" -ForegroundColor White  
+  Set-WinUILanguageOverride -Language $Script:SELECTED_LANG.LanguageCode
+  Write-Host "WLC: UI Language Override ON" -ForegroundColor White
+  Set-SystemPreferredUILanguage -Language $Script:SELECTED_LANG.LanguageCode >$null 2>&1
+  Write-Host "WLC: UI language set to $($Script:SELECTED_LANG.LanguageCode)" -ForegroundColor Cyan
 }

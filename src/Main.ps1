@@ -9,44 +9,42 @@ $code = @"
 $Win32Helpers = Add-Type -MemberDefinition $code -Name "Win32Helpers" -PassThru
 $null = $Win32Helpers::SetProcessDPIAware()
 
-function Write-WinLangConfig($Col1, $Col2) {
+function Write-WinLangConfig($MainColor, $AccentColor) {
   Clear-Host
-  Write-Host "   ____ ____ ____ ____ ____ ____ ____ " -ForegroundColor $Col2
-  Write-Host "  ||" -NoNewLine -ForegroundColor $Col2
-  Write-Host "W "  -NoNewLine -ForegroundColor $Col1
-  Write-Host "|||" -NoNewLine -ForegroundColor $Col2
-  Write-Host "I "  -NoNewLine -ForegroundColor $Col1
-  Write-Host "|||" -NoNewLine -ForegroundColor $Col2
-  Write-Host "N "  -NoNewLine -ForegroundColor $Col1
-  Write-Host "|||" -NoNewLine -ForegroundColor $Col2
-  Write-Host "L "  -NoNewLine -ForegroundColor $Col1
-  Write-Host "|||" -NoNewLine -ForegroundColor $Col2
-  Write-Host "A "  -NoNewLine -ForegroundColor $Col1
-  Write-Host "|||" -NoNewLine -ForegroundColor $Col2
-  Write-Host "N "  -NoNewLine -ForegroundColor $Col1
-  Write-Host "|||" -NoNewLine -ForegroundColor $Col2
-  Write-Host "G "  -NoNewLine -ForegroundColor $Col1
-  Write-Host "||`n" -NoNewLine -ForegroundColor $Col2
-  Write-Host "  ||__|||__|||__|||__|||__|||__|||__||" -ForegroundColor $Col2
-  Write-Host "  |/__\|/__\|/__\|/__\|/__\|/__\|/__\|" -ForegroundColor $Col2
-  Write-Host "     ____ ____ ____ ____ ____ ____    " -ForegroundColor $Col2
-  Write-Host "    ||" -NoNewline -ForegroundColor $Col2
-  Write-Host "C " -NoNewline -ForegroundColor $Col1
-  Write-Host "|||" -NoNewline -ForegroundColor $Col2
-  Write-Host "O " -NoNewline -ForegroundColor $Col1
-  Write-Host "|||" -NoNewline -ForegroundColor $Col2
-  Write-Host "N " -NoNewline -ForegroundColor $Col1
-  Write-Host "|||" -NoNewline -ForegroundColor $Col2
-  Write-Host "F " -NoNewline -ForegroundColor $Col1
-  Write-Host "|||" -NoNewline -ForegroundColor $Col2
-  Write-Host "I " -NoNewline -ForegroundColor $Col1
-  Write-Host "|||" -NoNewline -ForegroundColor $Col2
-  Write-Host "G " -NoNewline -ForegroundColor $Col1
-  Write-Host "||`n" -NoNewline -ForegroundColor $Col2
-  Write-Host "    ||__|||__|||__|||__|||__|||__||   " -ForegroundColor $Col2
-  Write-Host "    |/__\|/__\|/__\|/__\|/__\|/__\|   " -ForegroundColor $Col2
-  Write-Host
-  Write-Host "                 v0.1.0               " -ForegroundColor $Col2
+  Write-Host "   ____ ____ ____ ____ ____ ____ ____ " -ForegroundColor $MainColor
+  Write-Host "  ||" -NoNewLine -ForegroundColor $MainColor
+  Write-Host "W "  -NoNewLine -ForegroundColor $AccentColor
+  Write-Host "|||" -NoNewLine -ForegroundColor $MainColor
+  Write-Host "I "  -NoNewLine -ForegroundColor $AccentColor
+  Write-Host "|||" -NoNewLine -ForegroundColor $MainColor
+  Write-Host "N "  -NoNewLine -ForegroundColor $AccentColor
+  Write-Host "|||" -NoNewLine -ForegroundColor $MainColor
+  Write-Host "L "  -NoNewLine -ForegroundColor $AccentColor
+  Write-Host "|||" -NoNewLine -ForegroundColor $MainColor
+  Write-Host "A "  -NoNewLine -ForegroundColor $AccentColor
+  Write-Host "|||" -NoNewLine -ForegroundColor $MainColor
+  Write-Host "N "  -NoNewLine -ForegroundColor $AccentColor
+  Write-Host "|||" -NoNewLine -ForegroundColor $MainColor
+  Write-Host "G "  -NoNewLine -ForegroundColor $AccentColor
+  Write-Host "||`n" -NoNewLine -ForegroundColor $MainColor
+  Write-Host "  ||__|||__|||__|||__|||__|||__|||__||" -ForegroundColor $MainColor
+  Write-Host "  |/__\|/__\|/__\|/__\|/__\|/__\|/__\|" -ForegroundColor $MainColor
+  Write-Host "     ____ ____ ____ ____ ____ ____    " -ForegroundColor $MainColor
+  Write-Host "    ||" -NoNewline -ForegroundColor $MainColor
+  Write-Host "C " -NoNewline -ForegroundColor $AccentColor
+  Write-Host "|||" -NoNewline -ForegroundColor $MainColor
+  Write-Host "O " -NoNewline -ForegroundColor $AccentColor
+  Write-Host "|||" -NoNewline -ForegroundColor $MainColor
+  Write-Host "N " -NoNewline -ForegroundColor $AccentColor
+  Write-Host "|||" -NoNewline -ForegroundColor $MainColor
+  Write-Host "F " -NoNewline -ForegroundColor $AccentColor
+  Write-Host "|||" -NoNewline -ForegroundColor $MainColor
+  Write-Host "I " -NoNewline -ForegroundColor $AccentColor
+  Write-Host "|||" -NoNewline -ForegroundColor $MainColor
+  Write-Host "G " -NoNewline -ForegroundColor $AccentColor
+  Write-Host "||`n" -NoNewline -ForegroundColor $MainColor
+  Write-Host "    ||__|||__|||__|||__|||__|||__||   " -ForegroundColor $MainColor
+  Write-Host "    |/__\|/__\|/__\|/__\|/__\|/__\|   " -ForegroundColor $MainColor
   Write-Host
 }
 
@@ -198,7 +196,7 @@ $Button_SwitchDisplayLanguage.Add_Click({
     }
   })
   
-Write-WinLangConfig "White" "Cyan"
+Write-WinLangConfig "Cyan" "White"
 Start-Transcript "C:\Windows\Logs\WinLangConfig_Log_$($(Get-Date).ToString('yyMMddHHmmss')).txt" >$null 2>&1
 Show-FirstWindowControls
 $result = $MainWindowForm.ShowDialog()

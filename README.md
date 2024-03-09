@@ -4,7 +4,7 @@ A small script with a GUI to change the windows display language.
 
 [Download latest release](https://github.com/neuralpain/WinLangConfig/releases/latest)
 
-![wlc_ondesktop](https://github.com/neuralpain/WinLangConfig/assets/77242216/7e4955f8-edfa-48e8-94ed-5f52bd8ca401)
+![wlc_preview_1](https://github.com/neuralpain/WinLangConfig/assets/77242216/00bc5aab-db71-4e3a-b03f-316a51672a65)
 
 ## Supported Language Packs and Language Interface Packs
 

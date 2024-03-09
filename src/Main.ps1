@@ -50,7 +50,7 @@ function Write-WinLangConfig($MainColor, $AccentColor) {
 
 $Text_ComputerRequiresRestart = "Computer requires a restart to apply changes."
 $Text_ConfirmRestart = "Restart to apply changes. Do you want to restart now?"
-$Text_LanguageNotInstalled = "Language not installed. Please select an installed`n     language or install this language to use it."
+$Text_LanguageNotInstalled = "Language not installed. Please select an installed language or install this language to use it."
 
 $TITLE_BAR_HEIGHT = 40
 $BUTTON_HEIGHT = 100
@@ -99,7 +99,6 @@ $Button_SwitchDisplayLanguage = New-Object Button -Property @{
 $ListBox_LanguageSelection = New-Object ListBox -Property @{
   Location = New-Object System.Drawing.Point(10, 40)
   Dock     = 'Fill'
-  # Height   = $BUTTON_HEIGHT
 }
 
 $Label_NameTag = New-Object Label -Property @{
@@ -171,28 +170,29 @@ $Button_AddNewLanguage.Add_Click({
       Write-Host "`"$($Script:SELECTED_LANG.Name)`" is already installed. Please select another language." -ForegroundColor Yellow
     }
   })
-  
+
 $Button_SwitchDisplayLanguage.Add_Click({
     if ($null -eq $Script:SELECTED_LANG) { 
       Write-Host "WLC: Please select a language."; return 
     }
     
-    $currentDisplayLanguage = (Get-ItemProperty -Path "$LANGUAGE_REG_PATH" -Name $LANGUAGE_REG_KEY_DEFAULT).$LANGUAGE_REG_KEY_DEFAULT
-    if ($currentDisplayLanguage -eq $Script:SELECTED_LANG.HexValue) {
+    if ($Script:CURRENT_LANG.HexValue -eq $Script:SELECTED_LANG.HexValue) {
       Write-Host "WLC: Already using $($Script:SELECTED_LANG.Name)."; return
     }
     
     $languageIsInstalled = (Get-WinUserLanguageList | Where-Object { $_.LanguageTag -eq $Script:SELECTED_LANG.LanguageCode })
     if ($null -eq $languageIsInstalled) {
-      Write-Host "WLC: $Text_LanguageNotInstalled"  ; return
+      Write-Host "WLC: $Text_LanguageNotInstalled"; return
     }
 
     $confirm = [MessageBox]::Show("Are you sure you want to use $($Script:SELECTED_LANG.Name)?", "Confirm Language Selection", [MessageBoxButtons]::YesNo)
     if ($confirm -eq "Y") {
-      Edit-Registry -DefaultLanguage
+      Edit-Registry
       Update-LanguageList
       Set-SystemUILanguage
       Write-Host "WLC: $Text_ComputerRequiresRestart" -ForegroundColor Yellow
+      $confirm = [MessageBox]::Show($Text_ConfirmRestart, "Confirm Resatrt", [MessageBoxButtons]::YesNo)
+      if ($confirm -eq "Y") { Restart-Computer }
     }
   })
   

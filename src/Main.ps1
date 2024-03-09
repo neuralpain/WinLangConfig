@@ -39,7 +39,7 @@ function Write-WinLangConfig($Col1, $Col2) {
   Write-Host "    ||__|||__|||__|||__|||__|||__||   " -ForegroundColor $Col2
   Write-Host "    |/__\|/__\|/__\|/__\|/__\|/__\|   " -ForegroundColor $Col2
   Write-Host
-  Write-Host "                 v1.1.0               " -ForegroundColor $Col2
+  Write-Host "                 v0.1.0               " -ForegroundColor $Col2
   Write-Host
 }
 

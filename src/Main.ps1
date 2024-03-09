@@ -58,11 +58,11 @@ $TITLE_BAR_HEIGHT = 40
 $BUTTON_HEIGHT = 100
 $BUTTON_HEIGHT_SMALL = 50
 $WINDOW_WIDTH = 300
-$WINDOW_HEIGHT = $TITLE_BAR_HEIGHT + ($BUTTON_HEIGHT * 1) + ($BUTTON_HEIGHT_SMALL * 3) + 300
+$WINDOW_HEIGHT = $TITLE_BAR_HEIGHT + ($BUTTON_HEIGHT * 1) + ($BUTTON_HEIGHT_SMALL * 3) + 200
 
 $MainWindowForm = New-Object Form -Property @{
   StartPosition   = [FormStartPosition]::CenterScreen
-  Topmost         = $true
+  # Topmost         = $true
   MaximizeBox     = $false
   FormBorderStyle = "FixedDialog"
   MinimumSize     = New-Object Drawing.Size $WINDOW_WIDTH, $WINDOW_HEIGHT
@@ -88,7 +88,7 @@ $Button_ExitApplication = New-Object Button -Property @{
   Height       = $BUTTON_HEIGHT_SMALL
   Width        = $BUTTON_HEIGHT_SMALL / 2
   Dock         = 'Bottom'
-  Text         = "Exit"
+  Text         = "EXIT"
   DialogResult = [System.Windows.Forms.DialogResult]::Cancel
 }
 

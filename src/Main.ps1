@@ -9,48 +9,22 @@ $code = @"
 $Win32Helpers = Add-Type -MemberDefinition $code -Name "Win32Helpers" -PassThru
 $null = $Win32Helpers::SetProcessDPIAware()
 
-function Write-WinLangConfig($MainColor, $AccentColor) {
-  Clear-Host
-  Write-Host "   ____ ____ ____ ____ ____ ____ ____ " -ForegroundColor $MainColor
-  Write-Host "  ||" -NoNewLine -ForegroundColor $MainColor
-  Write-Host "W "  -NoNewLine -ForegroundColor $AccentColor
-  Write-Host "|||" -NoNewLine -ForegroundColor $MainColor
-  Write-Host "I "  -NoNewLine -ForegroundColor $AccentColor
-  Write-Host "|||" -NoNewLine -ForegroundColor $MainColor
-  Write-Host "N "  -NoNewLine -ForegroundColor $AccentColor
-  Write-Host "|||" -NoNewLine -ForegroundColor $MainColor
-  Write-Host "L "  -NoNewLine -ForegroundColor $AccentColor
-  Write-Host "|||" -NoNewLine -ForegroundColor $MainColor
-  Write-Host "A "  -NoNewLine -ForegroundColor $AccentColor
-  Write-Host "|||" -NoNewLine -ForegroundColor $MainColor
-  Write-Host "N "  -NoNewLine -ForegroundColor $AccentColor
-  Write-Host "|||" -NoNewLine -ForegroundColor $MainColor
-  Write-Host "G "  -NoNewLine -ForegroundColor $AccentColor
-  Write-Host "||`n" -NoNewLine -ForegroundColor $MainColor
-  Write-Host "  ||__|||__|||__|||__|||__|||__|||__||" -ForegroundColor $MainColor
-  Write-Host "  |/__\|/__\|/__\|/__\|/__\|/__\|/__\|" -ForegroundColor $MainColor
-  Write-Host "     ____ ____ ____ ____ ____ ____    " -ForegroundColor $MainColor
-  Write-Host "    ||" -NoNewline -ForegroundColor $MainColor
-  Write-Host "C " -NoNewline -ForegroundColor $AccentColor
-  Write-Host "|||" -NoNewline -ForegroundColor $MainColor
-  Write-Host "O " -NoNewline -ForegroundColor $AccentColor
-  Write-Host "|||" -NoNewline -ForegroundColor $MainColor
-  Write-Host "N " -NoNewline -ForegroundColor $AccentColor
-  Write-Host "|||" -NoNewline -ForegroundColor $MainColor
-  Write-Host "F " -NoNewline -ForegroundColor $AccentColor
-  Write-Host "|||" -NoNewline -ForegroundColor $MainColor
-  Write-Host "I " -NoNewline -ForegroundColor $AccentColor
-  Write-Host "|||" -NoNewline -ForegroundColor $MainColor
-  Write-Host "G " -NoNewline -ForegroundColor $AccentColor
-  Write-Host "||`n" -NoNewline -ForegroundColor $MainColor
-  Write-Host "    ||__|||__|||__|||__|||__|||__||   " -ForegroundColor $MainColor
-  Write-Host "    |/__\|/__\|/__\|/__\|/__\|/__\|   " -ForegroundColor $MainColor
-  Write-Host
-}
+Clear-Host
+Write-Host "   ____ ____ ____ ____ ____ ____ ____ "
+Write-Host "  ||W |||I |||N |||L |||A |||N |||G ||"
+Write-Host "  ||__|||__|||__|||__|||__|||__|||__||"
+Write-Host "  |/__\|/__\|/__\|/__\|/__\|/__\|/__\|"
+Write-Host "     ____ ____ ____ ____ ____ ____    "
+Write-Host "    ||C |||O |||N |||F |||I |||G ||   "
+Write-Host "    ||__|||__|||__|||__|||__|||__||   "
+Write-Host "    |/__\|/__\|/__\|/__\|/__\|/__\|   "
+Write-Host
 
-$Text_ComputerRequiresRestart = "Computer requires a restart to apply changes."
-$Text_ConfirmRestart = "Restart to apply changes. Do you want to restart now?"
-$Text_LanguageNotInstalled = "Language not installed. Please select an installed language or install this language to use it."
+$text_computerrequiresrestart = "Please restart the computer to apply changes."
+$text_confirmrestart = "Restart to apply changes. Do you want to restart now?"
+$text_languagenotinstalled = "Language not installed. Please select an installed language or install this language to use it."
+$text_alreadyinstalled = "is already installed. Please select another language."
+$text_nolanguageselected = "There is no language selected. Please select a language."
 
 $TITLE_BAR_HEIGHT = 40
 $BUTTON_HEIGHT = 100

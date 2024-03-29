@@ -124,6 +124,7 @@ $ListBox_LanguageSelection.Add_Click({
 
 $Button_AddNewLanguage.Add_Click({
     if ($null -eq $Script:SELECTED_LANG) { 
+      New-ToastNotification "There is no language selected. Please select a language." -ToastTitle "WLC: Select a Language"
       Write-Host "WLC: Please select a language."; return 
     }
 
@@ -133,30 +134,38 @@ $Button_AddNewLanguage.Add_Click({
       if ($confirm -eq "Y") {
         Edit-Registry
         Get-LanguagePack
+        # notify change
+        New-ToastNotification "$($Script:SELECTED_LANG.Name) was installed." -ToastTitle "WLC: Language Added"
         Update-LanguageList
         Set-SystemUILanguage
-        Write-Host "WLC: $Text_ComputerRequiresRestart" -ForegroundColor Yellow
-        $confirm = [MessageBox]::Show($Text_ConfirmRestart, "Confirm Resatrt", [MessageBoxButtons]::YesNo)
+        # request restart
+        New-ToastNotification "Your Windows display language has been changed to $($Script:SELECTED_LANG.Name). $text_computerrequiresrestart" -ToastTitle "WLC: PC Requires Restart"
+        Write-Host "WLC: $text_computerrequiresrestart" -ForegroundColor Yellow
+        $confirm = [MessageBox]::Show($text_confirmrestart, "Confirm Resatrt", [MessageBoxButtons]::YesNo)
         if ($confirm -eq "Y") { Restart-Computer }
       }
     }
     else { 
-      Write-Host "`"$($Script:SELECTED_LANG.Name)`" is already installed. Please select another language." -ForegroundColor Yellow
+      New-ToastNotification "$($Script:SELECTED_LANG.Name) $text_alreadyinstalled" -ToastTitle "WLC: Select a Language"
+      Write-Host "`"$($Script:SELECTED_LANG.Name)`" $text_alreadyinstalled" -ForegroundColor Yellow
     }
   })
 
 $Button_SwitchDisplayLanguage.Add_Click({
-    if ($null -eq $Script:SELECTED_LANG) { 
+    if ($null -eq $Script:SELECTED_LANG) {
+      New-ToastNotification "$text_nolanguageselected" -ToastTitle "WLC: Select a Language"
       Write-Host "WLC: Please select a language."; return 
     }
     
     if ($Script:CURRENT_LANG.HexValue -eq $Script:SELECTED_LANG.HexValue) {
+      New-ToastNotification "WLC: Already using $($Script:SELECTED_LANG.Name). Please select a different language." -ToastTitle "WLC: Already Using Language"
       Write-Host "WLC: Already using $($Script:SELECTED_LANG.Name)."; return
     }
     
     $languageIsInstalled = (Get-WinUserLanguageList | Where-Object { $_.LanguageTag -eq $Script:SELECTED_LANG.LanguageCode })
     if ($null -eq $languageIsInstalled) {
-      Write-Host "WLC: $Text_LanguageNotInstalled"; return
+      New-ToastNotification "$text_languagenotinstalled" -ToastTitle "WLC: Missing Language"
+      Write-Host "WLC: $text_languagenotinstalled"; return
     }
 
     $confirm = [MessageBox]::Show("Are you sure you want to use $($Script:SELECTED_LANG.Name)?", "Confirm Language Selection", [MessageBoxButtons]::YesNo)
@@ -164,14 +173,14 @@ $Button_SwitchDisplayLanguage.Add_Click({
       Edit-Registry
       Update-LanguageList
       Set-SystemUILanguage
-      Write-Host "WLC: $Text_ComputerRequiresRestart" -ForegroundColor Yellow
-      $confirm = [MessageBox]::Show($Text_ConfirmRestart, "Confirm Resatrt", [MessageBoxButtons]::YesNo)
+      New-ToastNotification "Your Windows display language has been changed to $($Script:SELECTED_LANG.Name). $text_computerrequiresrestart" -ToastTitle "WLC: PC Requires Restart"
+      Write-Host "WLC: $text_computerrequiresrestart" -ForegroundColor Yellow
+      $confirm = [MessageBox]::Show($text_confirmrestart, "Confirm Resatrt", [MessageBoxButtons]::YesNo)
       if ($confirm -eq "Y") { Restart-Computer }
     }
   })
   
-Write-WinLangConfig "Cyan" "White"
-Start-Transcript "C:\Windows\Logs\WinLangConfig_Log_$($(Get-Date).ToString('yyMMddHHmmss')).txt" >$null 2>&1
+Start-Transcript "C:\Windows\Logs\WinLangConfig\WinLangConfig_$((Get-Date).ToString('yyMMdd_HHmmss')).log" >$null 2>&1
 Show-FirstWindowControls
 $result = $MainWindowForm.ShowDialog()
 if ($result -eq [System.Windows.Forms.DialogResult]::Cancel) { exit }

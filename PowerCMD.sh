@@ -48,9 +48,8 @@ exclude_files=()
 # declare a list of your PowerShell functions here
 powershell_functions=(
   "$functions/Initialize-LanguageObjects.ps1"
+  "$functions/New-ToastNotification.ps1"
   "$functions/Get-WinDisplayLanguage.ps1"
-  # you should not need to remove Main.ps1
-  # unless the main PowerShell file is renamed
   "$src/Main.ps1"
 )
 
@@ -74,7 +73,7 @@ add_pwsh() {
   echo "if defined ARGS set ARGS=%ARGS:'=''%" >> $cmd_cache
   echo >> $cmd_cache
 
-  # uses neuralpain/cmdUAC.cmd <https://gist.github.com/neuralpain/4bcc08065fe79e4597eb65ed707be90d>
+  # using neuralpain/cmdUAC.cmd <https://gist.github.com/neuralpain/4bcc08065fe79e4597eb65ed707be90d>
   if [[ $with_admin == true ]]; then
     echo ":: check admin permissions" >> $cmd_cache
     echo "fsutil dirty query %systemdrive% >nul" >> $cmd_cache
@@ -105,7 +104,7 @@ add_pwsh() {
 
 bundle() {
   [[ ! -d "./cache" ]] && mkdir cache || rm -r ./cache/*;
-  # uses neuralpain/PwshBatch.cmd <https://gist.github.com/neuralpain/4ca8a6c9aca4f0a1af2440f474e92d05>
+  # using neuralpain/PwshBatch.cmd <https://gist.github.com/neuralpain/4ca8a6c9aca4f0a1af2440f474e92d05>
   echo "<# :# DO NOT REMOVE THIS LINE" > $cmd_cache
   echo >> $cmd_cache
   echo ":: $name.cmd, Version $version" >> $cmd_cache

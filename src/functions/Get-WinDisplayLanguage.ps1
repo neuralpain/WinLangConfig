@@ -12,17 +12,8 @@ foreach ($lang in $LanguageObjectList) {
 
 function Edit-Registry {
   param($Language = $Script:SELECTED_LANG)
-  
-  Set-ItemProperty `
-    -Path $LANGUAGE_REG_PATH `
-    -Name $LANGUAGE_REG_KEY_DEFAULT `
-    -Value $Language.HexValue
-  
-  Set-ItemProperty `
-    -Path $LANGUAGE_REG_PATH `
-    -Name $LANGUAGE_REG_KEY_INSTALL `
-    -Value $Language.HexValue
-  
+  Set-ItemProperty -Path $LANGUAGE_REG_PATH -Name $LANGUAGE_REG_KEY_DEFAULT -Value $Language.HexValue
+  Set-ItemProperty -Path $LANGUAGE_REG_PATH -Name $LANGUAGE_REG_KEY_INSTALL -Value $Language.HexValue
   Write-Host "WLC: Updated registry" -ForegroundColor White
 }
 
@@ -32,7 +23,12 @@ function Restore-PreviousLanguageAfterDownloadFailure {
 }
 
 function Get-LanguagePack {
-  $DownloadJob = Install-Language -Language $Script:SELECTED_LANG.LanguageCode -CopyToSettings -AsJob
+  if (-not(Test-Connection "www.google.com" -Quiet)) {
+    Write-Host "No internet."
+    Pause; return
+  }
+  
+  $DownloadJob = Install-Language -Language $Script:SELECTED_LANG.LanguageCode -CopyToSettings -ExcludeFeatures -AsJob
 
   while ($DownloadJob.State -eq 'Running') {
     Write-Host -NoNewLine "`rInstalling $($Script:SELECTED_LANG.Name) [.....] " -ForegroundColor Cyan
@@ -80,8 +76,9 @@ function Set-SystemUILanguage {
   # https://github.com/jchv/go-webview2/issues/13
   Set-WinSystemLocale $Script:SELECTED_LANG.LanguageCode
   Write-Host "WLC: System locale updated" -ForegroundColor White  
-  Set-WinUILanguageOverride -Language $Script:SELECTED_LANG.LanguageCode
-  Write-Host "WLC: UI Language Override ON" -ForegroundColor White
+  # Set-WinUILanguageOverride -Language $Script:SELECTED_LANG.LanguageCode
+  # Write-Host "WLC: UI Language Override ON" -ForegroundColor White
   Set-SystemPreferredUILanguage -Language $Script:SELECTED_LANG.LanguageCode >$null 2>&1
+  # Set-Language -Language $Script:SELECTED_LANG.LanguageCode
   Write-Host "WLC: UI language set to $($Script:SELECTED_LANG.LanguageCode)" -ForegroundColor Cyan
 }
